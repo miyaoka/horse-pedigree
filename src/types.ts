@@ -1,6 +1,6 @@
 export type HorseInfo = {
   name: string;
-  born: number;
+  born: string;
   sex: string;
   father: string;
   mother: string;

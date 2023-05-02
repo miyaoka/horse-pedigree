@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { HorseInfo } from "~/types";
+import { sortByBorn } from "./util";
 
 const props = defineProps<{
   horse: HorseInfo;
@@ -16,18 +17,21 @@ const children = computed(() => {
     if (!child) continue;
     children.push(child);
   }
-  return children.sort((a, b) => b.born - a.born);
+  return children.sort(sortByBorn);
 });
 </script>
 
 <template>
-  <div class="container">
-    <div class="horse">
-      <span class="name" :class="{ isFemale: horse.sex === 'F' }">{{
-        horse.name
-      }}</span>
-      <span class="born">{{ horse.born }}</span>
-      <span class="win">{{ horse.win }}</span>
+  <div class="ml-8">
+    <div class="flex gap-1 items-center">
+      <div class="text-xs text-gray-400">{{ horse.born }}</div>
+      <div class="name" :class="{ isFemale: horse.sex === 'F' }">
+        {{ horse.name }}
+      </div>
+      <div class="text-xs text-gray-500">
+        {{ sexType === "M" ? horse.mother : horse.father }}
+      </div>
+      <div class="text-sm">{{ horse.win }}</div>
     </div>
     <div class="children">
       <HorseRenderer
@@ -42,20 +46,8 @@ const children = computed(() => {
 </template>
 
 <style scoped>
-.container {
-  margin-left: 30px;
-}
-.horse {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-}
-.born,
-.win {
-  font-size: 0.8em;
-}
 .name {
-  color: rgb(29, 29, 129);
+  color: rgb(15, 15, 195);
 }
 .isFemale {
   color: red;
