@@ -3,6 +3,7 @@ import jspreadsheet from "jspreadsheet-ce";
 import sampleData from "@/assets/sampleData.json";
 import { HorseInfo } from "@/types";
 import { sortByBorn } from "./util";
+import { useHorseStore } from "./horseStore";
 
 useHead({
   link: [
@@ -16,9 +17,11 @@ useHead({
     },
   ],
   bodyAttrs: {
-    class: "p-10",
+    class: "p-4",
   },
 });
+
+const horseStore = useHorseStore();
 
 const sheetRef = ref<HTMLDivElement | null>(null);
 const sheetData = ref<string[][]>(sampleData);
@@ -26,7 +29,8 @@ const sheetData = ref<string[][]>(sampleData);
 onMounted(() => {
   const el = sheetRef.value;
   if (!el) return;
-  const sheet = jspreadsheet(el, {
+
+  jspreadsheet(el, {
     data: sheetData.value,
     columns: [
       { type: "text", title: "名前", width: 160 },
@@ -36,6 +40,10 @@ onMounted(() => {
       { type: "text", title: "母", width: 160 },
       { type: "text", title: "実績", width: 120 },
     ],
+    onselection: (instance, left, top, right, bottom) => {
+      console.log(sheetData.value[top][left]);
+      horseStore.selected = [sheetData.value[top][left]];
+    },
   });
 });
 
@@ -58,44 +66,23 @@ const horseMap = computed(() => {
     map.set(name, obj);
   }
 
-  const rootMap = new Map<string, HorseInfo>();
-  const getOrCreate = (name: string, isFather: boolean) => {
-    if (!name) return null;
-
-    const horse = map.get(name) ?? rootMap.get(name);
-    if (horse) return horse;
-    return null;
-
-    const refHorse: HorseInfo = {
-      name,
-      born: "",
-      sex: isFather ? "M" : "F",
-      father: "",
-      mother: "",
-      win: "",
-      children: [],
-      isRoot: true,
-    };
-    rootMap.set(name, refHorse);
-    return refHorse;
-  };
   for (const entry of map.entries()) {
     const [name, horse] = entry;
     const { father, mother, sex } = horse;
-    const fatherObj = getOrCreate(father, true);
-    const motherObj = getOrCreate(mother, false);
-    if (fatherObj) {
-      fatherObj.children.push(name);
+    const fatherHorse = map.get(father);
+    const motherHorse = map.get(mother);
+    if (fatherHorse) {
+      fatherHorse.children.push(name);
     }
-    if (motherObj) {
-      motherObj.children.push(name);
+    if (motherHorse) {
+      motherHorse.children.push(name);
     }
-    if ((sex === "M" && !fatherObj) || (sex === "F" && !motherObj)) {
+    if ((sex === "M" && !fatherHorse) || (sex === "F" && !motherHorse)) {
       horse.isRoot = true;
     }
   }
 
-  return new Map([...map, ...rootMap]);
+  return map;
 });
 
 const rootList = computed(() => {
@@ -103,13 +90,11 @@ const rootList = computed(() => {
   const sireRootList = [];
 
   for (const horse of horseMap.value.values()) {
-    if (!horse.isRoot) continue;
+    if (!horse.isRoot || horse.children.length === 0) continue;
     if (horse.sex === "F") {
       familyRootList.push(horse);
     } else {
-      if (horse.children.length > 0) {
-        sireRootList.push(horse);
-      }
+      sireRootList.push(horse);
     }
   }
   return {
@@ -120,25 +105,31 @@ const rootList = computed(() => {
 </script>
 
 <template>
-  <div class="flex gap-4">
+  <div class="flex gap-4 flex-wrap">
     <div>
       <div ref="sheetRef" />
       <details>
         <summary>sheetData</summary>
         {{ sheetData }}
       </details>
+      <div>
+        {{ horseStore.selected }}
+      </div>
     </div>
     <div class="flex flex-row gap-4">
       <div class="p-4 gap-4 flex flex-col">
         <header class="text-lg underline">Family line</header>
         <details v-for="horse in rootList.familyRootList" open>
-          <summary>{{ horse.name }}</summary>
+          <summary class="text-sm">
+            <span>{{ horse.name }}</span>
+            <span class="ml-2 text-xs">{{ horse.mother }}</span>
+          </summary>
           <HorseRenderer
             :horse="horse"
             :horseMap="horseMap"
             :level="0"
             sexType="F"
-            class="outline-pink-300 outline-2 outline p-4"
+            class="outline-red-300 outline-1 outline p-4 bg-pink-50 rounded-xl"
           />
         </details>
       </div>
@@ -146,13 +137,16 @@ const rootList = computed(() => {
         <header class="text-lg underline">Sire line</header>
 
         <details v-for="horse in rootList.sireRootList" open>
-          <summary>{{ horse.name }}</summary>
+          <summary class="text-sm">
+            <span>{{ horse.name }}</span>
+            <span class="ml-2 text-xs">{{ horse.father }}</span>
+          </summary>
           <HorseRenderer
             :horse="horse"
             :horseMap="horseMap"
             :level="0"
             sexType="M"
-            class="outline-indigo-300 outline-2 outline p-4"
+            class="outline-indigo-300 outline-1 outline p-4 bg-indigo-50 rounded-xl"
           />
         </details>
       </div>

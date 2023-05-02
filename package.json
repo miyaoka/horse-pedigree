@@ -16,6 +16,8 @@
     "tailwindcss": "^3.3.2"
   },
   "dependencies": {
-    "jspreadsheet-ce": "^4.11.5"
+    "@pinia/nuxt": "^0.4.9",
+    "jspreadsheet-ce": "^4.11.5",
+    "pinia": "^2.0.35"
   }
 }
