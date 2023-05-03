@@ -15,9 +15,6 @@ useHead({
       href: "https://jsuites.net/v4/jsuites.css",
     },
   ],
-  bodyAttrs: {
-    class: "p-4",
-  },
 });
 
 const horseStore = useHorseStore();
@@ -138,11 +135,11 @@ onMounted(() => {
   jspreadsheet(el, {
     data: sheetData.value,
     columns: [
-      { type: "text", title: "名前", width: 160 },
+      { type: "text", title: "名前", width: 120 },
       { type: "numeric", title: "生年", width: 40 },
       { type: "text", title: "性別", width: 30 },
-      { type: "text", title: "父", width: 160 },
-      { type: "text", title: "母", width: 160 },
+      { type: "text", title: "父", width: 120 },
+      { type: "text", title: "母", width: 120 },
       { type: "text", title: "メモ", width: 120 },
     ],
     onselection: (instance, left, top, right, bottom) => {
@@ -153,64 +150,64 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex gap-2 flex-wrap">
-    <section name="sheet">
+  <header class="flex p-2 justify-center">
+    スプレッドシートから系統図を表示するツール
+  </header>
+  <div class="flex gap-2 flex-wrap p-2">
+    <details name="sheet" open>
+      <summary>シート</summary>
       <div ref="sheetRef" class="text-xs" />
-      <details>
-        <summary>sheetData</summary>
-        {{ sheetData }}
-      </details>
-      <div>
-        {{ horseStore.selected }}
-      </div>
-    </section>
+    </details>
 
-    <section name="timeline" class="w-[400px]">
-      <header class="text-lg underline py-4">timeline</header>
-
-      <input
-        type="range"
-        min="1"
-        max="20"
-        v-model="horseStore.selectedYearRange"
-      />
-      {{ horseStore.selectedYearRange }}
-
-      <div
-        v-for="{ year, horses } in timeline"
-        class="flex flex-row gap-2 text-sm"
-      >
-        <button
-          @mouseover="horseStore.selectYear(year)"
-          @mouseleave="horseStore.selectYear(0)"
-          class="px-4"
-          :class="{
-            isSelected: year === horseStore.selectedYear,
-          }"
+    <details name="timeline" open>
+      <summary>timeline</summary>
+      <div class="w-[400px]">
+        <div class="text-sm p-2">
+          年代レンジ：
+          <input
+            type="range"
+            min="1"
+            max="20"
+            v-model="horseStore.selectedYearRange"
+          />
+          {{ horseStore.selectedYearRange }}
+        </div>
+        <div
+          v-for="{ year, horses } in timeline"
+          class="flex flex-row gap-2 text-sm border-t border-gray-200"
           :style="getYearStyle(year)"
         >
-          {{ year }}
-        </button>
-        <div class="flex flex-row gap-1 flex-wrap items-start">
           <button
-            class="name"
-            v-for="horse in horses"
-            @mouseover="horseStore.select(horse)"
-            @mouseleave="horseStore.select(null)"
+            @mouseover="horseStore.selectYear(year)"
+            @mouseleave="horseStore.selectYear(0)"
+            class="px-4"
             :class="{
-              isFemale: horse.sex === 'F',
-              isSelected: horseStore.isSelected(horse),
+              isSelected: year === horseStore.selectedYear,
             }"
           >
-            {{ horse.name }}
+            {{ year }}
           </button>
+          <div class="flex flex-row gap-1 flex-wrap items-start">
+            <button
+              class="name"
+              v-for="horse in horses"
+              @mouseover="horseStore.select(horse)"
+              @mouseleave="horseStore.select(null)"
+              :class="{
+                isFemale: horse.sex === 'F',
+                isSelected: horseStore.isSelected(horse),
+              }"
+            >
+              {{ horse.name }}
+            </button>
+          </div>
         </div>
       </div>
-    </section>
+    </details>
 
-    <section name="bloodline" class="flex flex-row gap-4">
+    <details name="familyLine" open>
+      <summary>Family line</summary>
       <div class="p-4 gap-4 flex flex-col">
-        <header class="text-lg underline">Family line</header>
         <details v-for="horse in rootList.familyRootList" open>
           <summary class="text-sm">
             <span>{{ horse.name }}</span>
@@ -225,9 +222,10 @@ onMounted(() => {
           />
         </details>
       </div>
+    </details>
+    <details name="sireLine" open>
+      <summary>Sire line</summary>
       <div class="p-4 flex flex-col gap-4">
-        <header class="text-lg underline">Sire line</header>
-
         <details v-for="horse in rootList.sireRootList" open>
           <summary class="text-sm">
             <span>{{ horse.name }}</span>
@@ -242,8 +240,16 @@ onMounted(() => {
           />
         </details>
       </div>
-    </section>
+    </details>
   </div>
+  <footer class="flex p-4 mb-10 justify-center">
+    <a
+      href="https://github.com/miyaoka/horse-pedigree"
+      target="_blank"
+      class="underline"
+      >Source(GitHub)</a
+    >
+  </footer>
 </template>
 
 <style scoped>
