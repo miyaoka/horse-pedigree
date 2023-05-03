@@ -1,5 +1,5 @@
 {
-  "name": "bloodline",
+  "name": "horse-pedigree",
   "private": true,
   "scripts": {
     "build": "nuxt build",
