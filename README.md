@@ -1,4 +1,14 @@
-# Nuxt 3 Minimal Starter
+# スプレッドシートから系統図を表示するツール
+
+ウイニングポストで箱庭の管理馬をメモするときに系統関係を一覧化して把握しやすくします。
+
+スプレッドシートに馬名、生年、性別、両親を記入すると自動的に以下のビューが生成されます。
+
+- 時系列ビュー
+- 牝系図ビュー
+- サイアーラインビュー
+
+Demo: https://horse-pedigree.vercel.app/
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
