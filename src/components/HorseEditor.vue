@@ -139,11 +139,11 @@ onMounted(() => {
     data: sheetData.value,
     columns: [
       { type: "text", title: "名前", width: 160 },
-      { type: "numeric", title: "生年", width: 60 },
-      { type: "text", title: "性別", width: 40 },
+      { type: "numeric", title: "生年", width: 40 },
+      { type: "text", title: "性別", width: 30 },
       { type: "text", title: "父", width: 160 },
       { type: "text", title: "母", width: 160 },
-      { type: "text", title: "実績", width: 120 },
+      { type: "text", title: "メモ", width: 120 },
     ],
     onselection: (instance, left, top, right, bottom) => {
       horseStore.selected = [sheetData.value[top][left]];
@@ -153,9 +153,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex gap-4 flex-wrap">
+  <div class="flex gap-2 flex-wrap">
     <section name="sheet">
-      <div ref="sheetRef" />
+      <div ref="sheetRef" class="text-xs" />
       <details>
         <summary>sheetData</summary>
         {{ sheetData }}
@@ -165,7 +165,7 @@ onMounted(() => {
       </div>
     </section>
 
-    <section name="timeline">
+    <section name="timeline" class="w-[400px]">
       <header class="text-lg underline py-4">timeline</header>
 
       <input
@@ -191,7 +191,7 @@ onMounted(() => {
         >
           {{ year }}
         </button>
-        <div class="flex flex-row gap-1">
+        <div class="flex flex-row gap-1 flex-wrap items-start">
           <button
             class="name"
             v-for="horse in horses"

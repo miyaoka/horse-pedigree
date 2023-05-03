@@ -50,7 +50,7 @@ const opacity = computed(() => {
     >
       <div class="text-xs text-gray-400">{{ horse.born }}</div>
       <div
-        class="name"
+        class="name text-sm"
         :class="{
           isFemale: horse.sex === 'F',
         }"
