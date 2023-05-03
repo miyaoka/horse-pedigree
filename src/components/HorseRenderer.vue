@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { HorseInfo } from "~/types";
-import { sortByBorn } from "./util";
 import { useHorseStore } from "./horseStore";
-import { HorseStore } from "~~/.nuxt/components";
 
 const props = defineProps<{
   horse: HorseInfo;
@@ -21,15 +19,20 @@ const children = computed(() => {
     if (!child) continue;
     children.push(child);
   }
-  return children.sort(sortByBorn);
+  return children.sort((a, b) => a.born - b.born);
 });
-
-const onHover = (name: string) => {
-  horseStore.selected = [name];
-};
 
 const parentName = computed(() => {
   return props.sexType === "M" ? props.horse.mother : props.horse.father;
+});
+
+const opacity = computed(() => {
+  if (horseStore.selectedYear === 0) return 1;
+
+  const span = horseStore.selectedYearRange;
+  const diff = Math.abs(props.horse.born - horseStore.selectedYear) * 2;
+  const diffRate = diff / span;
+  return Math.max(1 - diffRate ** 2, 0.1);
 });
 </script>
 
@@ -37,9 +40,12 @@ const parentName = computed(() => {
   <div class="ml-4">
     <button
       class="horse flex gap-1 items-center"
-      @mouseover="onHover(horse.name)"
+      :style="{ opacity }"
+      @mouseover="horseStore.select(horse)"
+      @mouseleave="horseStore.select(null)"
       :class="{
-        isSelected: horseStore.selected.includes(horse.name),
+        isSelected: horseStore.isSelected(horse),
+        isSelectedYear: horse.born === horseStore.selectedYear,
       }"
     >
       <div class="text-xs text-gray-400">{{ horse.born }}</div>
@@ -73,9 +79,12 @@ const parentName = computed(() => {
   color: rgb(15, 15, 195);
 }
 .horse.isSelected {
-  background: #ecd062;
+  background: #ffdc4f;
 }
 .isFemale {
   color: red;
+}
+.isSelectedYear {
+  background: #ffdc4f6e;
 }
 </style>
