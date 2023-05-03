@@ -172,6 +172,9 @@ onMounted(() => {
           />
           {{ horseStore.selectedYearRange }}
         </div>
+        <div class="text-sm text-gray-500">
+          （年の部分をホバーするとフィルタ表示します）
+        </div>
         <div
           v-for="{ year, horses } in timeline"
           class="flex flex-row gap-2 text-sm border-t border-gray-200"

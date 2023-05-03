@@ -34,12 +34,14 @@ const opacity = computed(() => {
   const diffRate = diff / span;
   return Math.max(1 - diffRate ** 2, 0.1);
 });
+
+const isFemale = computed(() => props.horse.sex === "F");
 </script>
 
 <template>
   <div class="ml-4">
     <button
-      class="horse flex gap-1 items-center"
+      class="horse flex gap-1 items-center w-full"
       :style="{ opacity }"
       @mouseover="horseStore.select(horse)"
       @mouseleave="horseStore.select(null)"
@@ -52,15 +54,20 @@ const opacity = computed(() => {
       <div
         class="name text-sm"
         :class="{
-          isFemale: horse.sex === 'F',
+          isFemale,
         }"
       >
         {{ horse.name }}
       </div>
-      <div class="text-xs text-gray-500">
+      <div
+        class="text-[10px] text-gray-500 leading-tight"
+        :class="sexType === 'F' ? 'self-start' : 'self-end'"
+      >
         {{ parentName }}
       </div>
-      <div class="text-sm text-gray-600">{{ horse.win }}</div>
+      <div class="text-xs text-gray-600 text-right flex-auto">
+        {{ horse.win }}
+      </div>
     </button>
     <div class="children">
       <HorseRenderer
