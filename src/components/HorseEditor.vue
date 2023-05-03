@@ -214,7 +214,10 @@ onMounted(() => {
         <details v-for="horse in rootList.familyRootList" open>
           <summary class="text-sm">
             <span>{{ horse.name }}</span>
-            <span class="ml-2 text-xs">{{ horse.mother }}</span>
+            <template v-if="horse.mother">
+              <span> &lt; </span>
+              <span class="text-xs">{{ horse.mother }}</span>
+            </template>
           </summary>
           <HorseRenderer
             :horse="horse"
@@ -232,7 +235,10 @@ onMounted(() => {
         <details v-for="horse in rootList.sireRootList" open>
           <summary class="text-sm">
             <span>{{ horse.name }}</span>
-            <span class="ml-2 text-xs">{{ horse.father }}</span>
+            <template v-if="horse.father">
+              <span> &lt; </span>
+              <span class="text-xs">{{ horse.father }}</span>
+            </template>
           </summary>
           <HorseRenderer
             :horse="horse"
