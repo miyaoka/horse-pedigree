@@ -152,9 +152,9 @@ watch(
 
 <template>
   <div class="flex flex-col gap-2">
-    <div class="flex gap-2">
+    <div class="flex gap-2 justify-end px-2">
       <button class="px-2 bg-gray-200 outline outline-1" @click="clear">
-        clear
+        clear all
       </button>
       <button class="px-2 bg-gray-200 outline outline-1" @click="reset">
         load sample

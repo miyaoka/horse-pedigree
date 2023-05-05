@@ -32,7 +32,7 @@ const opacity = computed(() => {
   const span = horseStore.selectedYearRange;
   const diff = Math.abs((props.horse.born ?? 0) - horseStore.selectedYear) * 2;
   const diffRate = 1 - diff / span;
-  return diffRate > 0 ? 1 : 0.1;
+  return diffRate > 0 ? 1 : 0.2;
 });
 
 const isFemale = computed(() => props.horse.sex === "F");
