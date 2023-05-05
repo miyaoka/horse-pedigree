@@ -4,7 +4,6 @@ import { useHorseStore } from "./horseStore";
 
 const props = defineProps<{
   horse: HorseInfo;
-  horseMap: Map<string, HorseInfo>;
   level: number;
   sexType: string;
 }>();
@@ -15,7 +14,7 @@ const children = computed(() => {
   if (props.sexType !== props.horse.sex) return [];
   const children = [];
   for (const childName of props.horse.children) {
-    const child = props.horseMap.get(childName);
+    const child = horseStore.horseMap.get(childName);
     if (!child) continue;
     children.push(child);
   }
@@ -73,7 +72,6 @@ const isFemale = computed(() => props.horse.sex === "F");
       <HorseRenderer
         v-for="child in children"
         :horse="child"
-        :horseMap="horseMap"
         :level="level + 1"
         :sexType="sexType"
       />

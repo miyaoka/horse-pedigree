@@ -31,4 +31,46 @@ export const useHorseStore = defineStore("horseStore", {
       this.selectedYear = year;
     },
   },
+  getters: {
+    horseMap(state) {
+      const map = new Map<string, HorseInfo>();
+      for (const row of state.sheetData) {
+        const [name, _born, sex, father, mother, win] = row;
+        if (!name) continue;
+
+        const num = parseInt(_born, 10);
+        const born = isNaN(num) ? 0 : num;
+        const obj = {
+          name,
+          born,
+          sex,
+          father,
+          mother,
+          win,
+          children: [],
+          isRoot: false,
+        };
+
+        map.set(name, obj);
+      }
+
+      for (const entry of map.entries()) {
+        const [name, horse] = entry;
+        const { father, mother, sex } = horse;
+        const fatherHorse = map.get(father);
+        const motherHorse = map.get(mother);
+        if (fatherHorse) {
+          fatherHorse.children.push(name);
+        }
+        if (motherHorse) {
+          motherHorse.children.push(name);
+        }
+        if ((sex === "M" && !fatherHorse) || (sex === "F" && !motherHorse)) {
+          horse.isRoot = true;
+        }
+      }
+
+      return map;
+    },
+  },
 });

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import jspreadsheet from "jspreadsheet-ce";
 import sampleData from "@/assets/sampleData.json";
-import { HorseInfo } from "@/types";
 import { useHorseStore } from "./horseStore";
 import { useStorage } from "@vueuse/core";
 
