@@ -28,7 +28,7 @@ watch(
   (horseMap) => {
     const timelineMap = new Map<number, HorseInfo[]>();
     for (const horse of horseMap.values()) {
-      if (horse.born === 0) continue;
+      if (horse.born == null) continue;
       timelineMap.has(horse.born)
         ? timelineMap.get(horse.born)?.push(horse)
         : timelineMap.set(horse.born, [horse]);

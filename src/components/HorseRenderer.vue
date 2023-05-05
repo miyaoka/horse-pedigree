@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { HorseInfo } from "~/types";
 import { useHorseStore } from "./horseStore";
+import { sortByBorn } from "./util";
 
 const props = defineProps<{
   horse: HorseInfo;
@@ -18,7 +19,7 @@ const children = computed(() => {
     if (!child) continue;
     children.push(child);
   }
-  return children.sort((a, b) => a.born - b.born);
+  return children.sort(sortByBorn);
 });
 
 const parentName = computed(() => {
@@ -29,9 +30,9 @@ const opacity = computed(() => {
   if (horseStore.selectedYear === 0) return 1;
 
   const span = horseStore.selectedYearRange;
-  const diff = Math.abs(props.horse.born - horseStore.selectedYear) * 2;
-  const diffRate = diff / span;
-  return Math.max(1 - diffRate ** 2, 0.1);
+  const diff = Math.abs((props.horse.born ?? 0) - horseStore.selectedYear) * 2;
+  const diffRate = 1 - diff / span;
+  return diffRate > 0 ? 1 : 0.1;
 });
 
 const isFemale = computed(() => props.horse.sex === "F");

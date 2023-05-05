@@ -61,8 +61,8 @@ onMounted(() => {
       { type: "text", title: "性別", width: 30 },
       { type: "text", title: "父", width: 120 },
       { type: "text", title: "母", width: 120 },
-      { type: "text", title: "系統", width: 120 },
       { type: "text", title: "メモ", width: 120 },
+      { type: "text", title: "系統", width: 120 },
     ],
     onselection: (instance, left, top, right, bottom) => {
       horseStore.selected = [sheetState.value[top][left]];

@@ -35,11 +35,11 @@ export const useHorseStore = defineStore("horseStore", {
     horseMap(state) {
       const map = new Map<string, HorseInfo>();
       for (const row of state.sheetData) {
-        const [name, _born, sex, father, mother, line, memo] = row;
+        const [name, _born, sex, father, mother, memo, line] = row;
         if (!name) continue;
 
         const num = parseInt(_born, 10);
-        const born = isNaN(num) ? 0 : num;
+        const born = isNaN(num) ? null : num;
         const obj = {
           name,
           born,
