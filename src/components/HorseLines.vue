@@ -6,13 +6,11 @@ import { sortByBorn } from "./util";
 const horseStore = useHorseStore();
 
 const rootList = computed(() => {
-  const familyRootList = [];
-  const sireRootList = [];
-
   const horseMap = horseStore.horseMap;
   const commonParentMap = new Map<string, HorseInfo>();
 
-  const getParent = (parentName: string, sex: string) => {
+  // 親を取得する。なければ作成してmapに登録する
+  const getOrCreateParent = (parentName: string, sex: string) => {
     const parent = commonParentMap.get(parentName);
     if (parent) {
       return parent;
@@ -32,45 +30,52 @@ const rootList = computed(() => {
     return newParent;
   };
 
+  // 各馬の親リストを作成する
   for (const horse of horseMap.values()) {
     const { father, mother } = horse;
     if (father && !horseMap.has(father)) {
-      const parent = getParent(father, "M");
+      const parent = getOrCreateParent(father, "M");
       parent.children.push(horse.name);
     }
     if (mother && !horseMap.has(mother)) {
-      const parent = getParent(mother, "F");
+      const parent = getOrCreateParent(mother, "F");
       parent.children.push(horse.name);
     }
   }
 
+  const familyRootMap = new Map<string, HorseInfo>();
+  const sireRootMap = new Map<string, HorseInfo>();
+
+  // 親リストで子を複数持つものはrootMapに追加する
   for (const horse of commonParentMap.values()) {
     if (horse.children.length < 2) continue;
     if (horse.sex === "F") {
-      familyRootList.push(horse);
+      familyRootMap.set(horse.name, horse);
     } else {
-      sireRootList.push(horse);
+      sireRootMap.set(horse.name, horse);
     }
   }
 
+  // 馬一覧でrootとなるものをrootMapに追加する
   for (const horse of horseMap.values()) {
-    if (
-      horse.children.length === 0 ||
-      !(horse.isRoot || horse.line === horse.name)
-    )
-      continue;
+    // 子が無ければrootにしない
+    if (horse.children.length === 0) continue;
 
+    // rootまたは系統主になっていないならrootにしない
+    if (!(horse.isRoot || horse.line === horse.name)) continue;
+
+    // 親がrootに登録されていないならrootMapに追加する
     if (horse.sex === "F") {
-      if (familyRootList.some((root) => root.name === horse.mother)) continue;
-      familyRootList.push(horse);
+      if (familyRootMap.has(horse.mother)) continue;
+      familyRootMap.set(horse.name, horse);
     } else {
-      if (familyRootList.some((root) => root.name === horse.fatehr)) continue;
-      sireRootList.push(horse);
+      if (familyRootMap.has(horse.father)) continue;
+      sireRootMap.set(horse.name, horse);
     }
   }
   return {
-    sireRootList: sireRootList.sort(sortByBorn),
-    familyRootList: familyRootList.sort(sortByBorn),
+    sireRootList: [...sireRootMap.values()].sort(sortByBorn),
+    familyRootList: [...familyRootMap.values()].sort(sortByBorn),
   };
 });
 </script>
@@ -82,7 +87,9 @@ const rootList = computed(() => {
       <details v-for="horse in rootList.familyRootList" open>
         <summary class="text-sm">
           <span>{{ horse.name }}</span>
-          <span v-if="horse.line" class="text-xs">{{ horse.line }}系</span>
+          <span v-if="horse.line" class="text-xs"
+            >（🐎{{ horse.line }}系）</span
+          >
         </summary>
         <HorseRenderer
           :horse="horse"
@@ -99,7 +106,9 @@ const rootList = computed(() => {
       <details v-for="horse in rootList.sireRootList" open>
         <summary class="text-sm">
           <span>{{ horse.name }}</span>
-          <span v-if="horse.line" class="text-xs">{{ horse.line }}系</span>
+          <span v-if="horse.line" class="text-xs"
+            >（🐎{{ horse.line }}系）</span
+          >
         </summary>
         <HorseRenderer
           :horse="horse"
