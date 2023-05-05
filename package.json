@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@pinia/nuxt": "0.4.9",
+    "@vueuse/core": "^10.1.2",
     "jspreadsheet-ce": "4.11.5",
     "pinia": "2.0.35"
   },

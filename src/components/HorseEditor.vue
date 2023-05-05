@@ -19,12 +19,9 @@ useHead({
 
 const horseStore = useHorseStore();
 
-const sheetRef = ref<HTMLDivElement | null>(null);
-const sheetData = ref<string[][]>(sampleData);
-
 const horseMap = computed(() => {
   const map = new Map<string, HorseInfo>();
-  for (const row of sheetData.value) {
+  for (const row of horseStore.sheetData) {
     const [name, _born, sex, father, mother, win] = row;
     if (!name) continue;
 
@@ -127,26 +124,6 @@ watch(
     immediate: true,
   }
 );
-
-onMounted(() => {
-  const el = sheetRef.value;
-  if (!el) return;
-
-  jspreadsheet(el, {
-    data: sheetData.value,
-    columns: [
-      { type: "text", title: "名前", width: 120 },
-      { type: "numeric", title: "生年", width: 40 },
-      { type: "text", title: "性別", width: 30 },
-      { type: "text", title: "父", width: 120 },
-      { type: "text", title: "母", width: 120 },
-      { type: "text", title: "メモ", width: 120 },
-    ],
-    onselection: (instance, left, top, right, bottom) => {
-      horseStore.selected = [sheetData.value[top][left]];
-    },
-  });
-});
 </script>
 
 <template>
@@ -156,7 +133,7 @@ onMounted(() => {
   <div class="flex gap-2 flex-wrap p-2">
     <details name="sheet" open>
       <summary>シート</summary>
-      <div ref="sheetRef" class="text-xs" />
+      <HorseSheet />
     </details>
 
     <details name="timeline" open>
