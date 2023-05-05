@@ -35,12 +35,17 @@ const opacity = computed(() => {
 });
 
 const isFemale = computed(() => props.horse.sex === "F");
+
+const isNewLine = computed(() => {
+  if (props.level === 0 || props.sexType !== props.horse.sex) return false;
+  return props.horse.name === props.horse.line;
+});
 </script>
 
 <template>
   <div class="ml-4">
-    <button
-      class="horse flex gap-1 items-center w-full"
+    <div
+      class="horse flex gap-1 items-center w-full cursor-pointer"
       :style="{ opacity }"
       @mouseover="horseStore.select(horse)"
       @mouseleave="horseStore.select(null)"
@@ -54,10 +59,13 @@ const isFemale = computed(() => props.horse.sex === "F");
         class="name text-sm"
         :class="{
           isFemale,
+          isNewLine,
         }"
       >
         {{ horse.name }}
+        <span v-if="isNewLine">🔽</span>
       </div>
+
       <div
         class="text-[10px] text-gray-500 leading-tight"
         :class="sexType === 'F' ? 'self-start' : 'self-end'"
@@ -65,10 +73,10 @@ const isFemale = computed(() => props.horse.sex === "F");
         {{ parentName }}
       </div>
       <div class="text-xs text-gray-600 text-right flex-auto">
-        {{ horse.win }}
+        {{ horse.memo }}
       </div>
-    </button>
-    <div class="children">
+    </div>
+    <div class="children" v-if="!isNewLine">
       <HorseRenderer
         v-for="child in children"
         :horse="child"
@@ -88,6 +96,9 @@ const isFemale = computed(() => props.horse.sex === "F");
 }
 .isFemale {
   color: red;
+}
+.isNewLine {
+  text-decoration: underline;
 }
 .isSelectedYear {
   background: #ffdc4f6e;

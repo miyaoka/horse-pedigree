@@ -8,7 +8,11 @@ const rootList = computed(() => {
   const sireRootList = [];
 
   for (const horse of horseStore.horseMap.values()) {
-    if (!horse.isRoot || horse.children.length === 0) continue;
+    if (
+      horse.children.length === 0 ||
+      !(horse.isRoot || horse.line === horse.name)
+    )
+      continue;
     if (horse.sex === "F") {
       familyRootList.push(horse);
     } else {
@@ -29,10 +33,7 @@ const rootList = computed(() => {
       <details v-for="horse in rootList.familyRootList" open>
         <summary class="text-sm">
           <span>{{ horse.name }}</span>
-          <template v-if="horse.mother">
-            <span> &lt; </span>
-            <span class="text-xs">{{ horse.mother }}</span>
-          </template>
+          <span v-if="horse.line" class="text-xs">{{ horse.line }}系</span>
         </summary>
         <HorseRenderer
           :horse="horse"
@@ -49,10 +50,7 @@ const rootList = computed(() => {
       <details v-for="horse in rootList.sireRootList" open>
         <summary class="text-sm">
           <span>{{ horse.name }}</span>
-          <template v-if="horse.father">
-            <span> &lt; </span>
-            <span class="text-xs">{{ horse.father }}</span>
-          </template>
+          <span v-if="horse.line" class="text-xs">{{ horse.line }}系</span>
         </summary>
         <HorseRenderer
           :horse="horse"

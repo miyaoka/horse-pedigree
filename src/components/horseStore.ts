@@ -35,7 +35,7 @@ export const useHorseStore = defineStore("horseStore", {
     horseMap(state) {
       const map = new Map<string, HorseInfo>();
       for (const row of state.sheetData) {
-        const [name, _born, sex, father, mother, win] = row;
+        const [name, _born, sex, father, mother, line, memo] = row;
         if (!name) continue;
 
         const num = parseInt(_born, 10);
@@ -46,7 +46,8 @@ export const useHorseStore = defineStore("horseStore", {
           sex,
           father,
           mother,
-          win,
+          line,
+          memo,
           children: [],
           isRoot: false,
         };

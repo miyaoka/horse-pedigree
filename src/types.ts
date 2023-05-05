@@ -4,7 +4,8 @@ export type HorseInfo = {
   sex: string;
   father: string;
   mother: string;
-  win: string;
+  line: string;
+  memo: string;
   children: string[];
   isRoot: boolean;
 };

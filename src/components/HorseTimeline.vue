@@ -1,28 +1,8 @@
 <script setup lang="ts">
-import jspreadsheet from "jspreadsheet-ce";
-import sampleData from "@/assets/sampleData.json";
 import { HorseInfo } from "@/types";
 import { useHorseStore } from "./horseStore";
 
 const horseStore = useHorseStore();
-
-const rootList = computed(() => {
-  const familyRootList = [];
-  const sireRootList = [];
-
-  for (const horse of horseStore.horseMap.values()) {
-    if (!horse.isRoot || horse.children.length === 0) continue;
-    if (horse.sex === "F") {
-      familyRootList.push(horse);
-    } else {
-      sireRootList.push(horse);
-    }
-  }
-  return {
-    sireRootList: sireRootList.sort((a, b) => a.born - b.born),
-    familyRootList: familyRootList.sort((a, b) => a.born - b.born),
-  };
-});
 
 const minYear = ref(0);
 const maxYear = ref(0);
