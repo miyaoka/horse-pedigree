@@ -85,7 +85,7 @@ const rootList = computed(() => {
   <details name="familyLine" open>
     <summary>Family line</summary>
     <div class="p-4 gap-4 flex flex-col">
-      <details v-for="horse in rootList.familyRootList" open>
+      <details v-for="horse in rootList.familyRootList" open class="lineRoot">
         <summary class="text-sm">
           <span>{{ horse.name }}</span>
           <span v-if="horse.line" class="text-xs">（{{ horse.line }}系）</span>
@@ -102,7 +102,7 @@ const rootList = computed(() => {
   <details name="sireLine" open>
     <summary>Sire line</summary>
     <div class="p-4 flex flex-col gap-4">
-      <details v-for="horse in rootList.sireRootList" open>
+      <details v-for="horse in rootList.sireRootList" open class="lineRoot">
         <summary class="text-sm">
           <span>{{ horse.name }}</span>
           <span v-if="horse.line" class="text-xs">（{{ horse.line }}系）</span>
@@ -118,4 +118,8 @@ const rootList = computed(() => {
   </details>
 </template>
 
-<style scoped></style>
+<style scoped>
+.lineRoot:not(:has([data-shown="true"])) {
+  display: none;
+}
+</style>

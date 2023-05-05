@@ -48,6 +48,7 @@ const isNewLine = computed(() => {
     <div
       class="horse flex gap-1 items-center w-full cursor-pointer"
       :style="{ opacity }"
+      :data-shown="opacity === 1"
       @mouseover="horseStore.select(horse)"
       @mouseleave="horseStore.select(null)"
       :class="{
