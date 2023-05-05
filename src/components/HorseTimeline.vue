@@ -76,7 +76,7 @@ watch(
       <button
         @mouseover="horseStore.selectYear(year)"
         @mouseleave="horseStore.selectYear(0)"
-        class="px-4 self-start"
+        class="px-4 flex"
         :class="{
           isSelected: year === horseStore.selectedYear,
         }"
