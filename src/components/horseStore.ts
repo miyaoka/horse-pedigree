@@ -4,74 +4,31 @@ import { useStorage } from "@vueuse/core";
 import sampleData from "@/assets/sampleData.json";
 
 type State = {
-  selected: string[];
+  selectedHorses: string[];
   selectedYear: number;
   selectedYearRange: number;
-  sheetData: string[][];
+  horseMap: Map<string, HorseInfo>;
 };
 export const useHorseStore = defineStore("horseStore", {
   state: (): State => ({
-    selected: [],
+    selectedHorses: [],
     selectedYear: 0,
     selectedYearRange: 5,
-    sheetData: [[]],
+    horseMap: new Map(),
   }),
   actions: {
     select(horse: HorseInfo | null) {
       if (!horse) {
-        this.selected = [];
+        this.selectedHorses = [];
         return;
       }
-      this.selected = [horse.name];
+      this.selectedHorses = [horse.name];
     },
     isSelected(horse: HorseInfo) {
-      return this.selected.includes(horse.name);
+      return this.selectedHorses.includes(horse.name);
     },
     selectYear(year: number) {
       this.selectedYear = year;
-    },
-  },
-  getters: {
-    horseMap(state) {
-      const map = new Map<string, HorseInfo>();
-      for (const row of state.sheetData) {
-        const [name, _born, sex, father, mother, memo, line] = row;
-        if (!name) continue;
-
-        const num = parseInt(_born, 10);
-        const born = isNaN(num) ? null : num;
-        const obj = {
-          name,
-          born,
-          sex,
-          father,
-          mother,
-          line,
-          memo,
-          children: [],
-          isRoot: false,
-        };
-
-        map.set(name, obj);
-      }
-
-      for (const entry of map.entries()) {
-        const [name, horse] = entry;
-        const { father, mother, sex } = horse;
-        const fatherHorse = map.get(father);
-        const motherHorse = map.get(mother);
-        if (fatherHorse) {
-          fatherHorse.children.push(name);
-        }
-        if (motherHorse) {
-          motherHorse.children.push(name);
-        }
-        if ((sex === "M" && !fatherHorse) || (sex === "F" && !motherHorse)) {
-          horse.isRoot = true;
-        }
-      }
-
-      return map;
     },
   },
 });

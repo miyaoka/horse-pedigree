@@ -76,7 +76,7 @@ watch(
       <button
         @mouseover="horseStore.selectYear(year)"
         @mouseleave="horseStore.selectYear(0)"
-        class="px-4"
+        class="px-4 self-start"
         :class="{
           isSelected: year === horseStore.selectedYear,
         }"
@@ -85,7 +85,7 @@ watch(
       </button>
       <div class="flex flex-row gap-1 flex-wrap items-start">
         <button
-          class="name"
+          class="name leading-tight"
           v-for="horse in horses"
           @mouseover="horseStore.select(horse)"
           @mouseleave="horseStore.select(null)"

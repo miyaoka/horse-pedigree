@@ -3,6 +3,7 @@ import jspreadsheet from "jspreadsheet-ce";
 import sampleData from "@/assets/sampleData.json";
 import { useHorseStore } from "./horseStore";
 import { useStorage } from "@vueuse/core";
+import { HorseInfo } from "~/types";
 
 useHead({
   link: [
@@ -26,7 +27,8 @@ const sheet = ref<jspreadsheet.JspreadsheetInstance | null>(null);
 
 const save = () => {
   if (!sheet.value) return;
-  horseStore.sheetData = sheet.value.getData() as string[][];
+  console.log("save");
+  sheetState.value = sheet.value.getData() as string[][];
 };
 const clear = () => {
   if (!sheet.value) return;
@@ -52,7 +54,6 @@ onMounted(() => {
   const el = sheetRef.value;
   if (!el) return;
 
-  horseStore.sheetData = sheetState.value;
   sheet.value = jspreadsheet(el, {
     data: sheetState.value,
     columns: [
@@ -65,7 +66,7 @@ onMounted(() => {
       { type: "text", title: "系統", width: 120 },
     ],
     onselection: (instance, left, top, right, bottom) => {
-      horseStore.selected = [sheetState.value[top][left]];
+      horseStore.selectedHorses = [sheetState.value[top][left]];
     },
     onundo(_element, historyRecord) {
       if (!historyRecord) return;
@@ -74,8 +75,59 @@ onMounted(() => {
     onafterchanges() {
       save();
     },
+    onload() {
+      save();
+    },
   });
 });
+
+watch(
+  sheetState,
+  (state) => {
+    const map = new Map<string, HorseInfo>();
+    for (const row of state) {
+      const [name, _born, sex, father, mother, memo, line] = row;
+      if (!name) continue;
+
+      const num = parseInt(_born, 10);
+      const born = isNaN(num) ? null : num;
+      const obj = {
+        name,
+        born,
+        sex,
+        father,
+        mother,
+        line,
+        memo,
+        children: [],
+        isRoot: false,
+      };
+
+      map.set(name, obj);
+    }
+
+    for (const entry of map.entries()) {
+      const [name, horse] = entry;
+      const { father, mother, sex } = horse;
+      const fatherHorse = map.get(father);
+      const motherHorse = map.get(mother);
+      if (fatherHorse) {
+        fatherHorse.children.push(name);
+      }
+      if (motherHorse) {
+        motherHorse.children.push(name);
+      }
+      if ((sex === "M" && !fatherHorse) || (sex === "F" && !motherHorse)) {
+        horse.isRoot = true;
+      }
+    }
+
+    horseStore.horseMap = map;
+  },
+  {
+    immediate: true,
+  }
+);
 </script>
 
 <template>
