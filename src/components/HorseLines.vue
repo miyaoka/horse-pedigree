@@ -61,15 +61,16 @@ const rootList = computed(() => {
     // 子が無ければrootにしない
     if (horse.children.length === 0) continue;
 
+    const isLineRoot = horse.line === horse.name;
     // rootまたは系統主になっていないならrootにしない
-    if (!(horse.isRoot || horse.line === horse.name)) continue;
+    if (!(horse.isRoot || isLineRoot)) continue;
 
     // 親がrootに登録されていないならrootMapに追加する
     if (horse.sex === "F") {
-      if (familyRootMap.has(horse.mother)) continue;
+      if (!isLineRoot && familyRootMap.has(horse.mother)) continue;
       familyRootMap.set(horse.name, horse);
     } else {
-      if (familyRootMap.has(horse.father)) continue;
+      if (!isLineRoot && familyRootMap.has(horse.father)) continue;
       sireRootMap.set(horse.name, horse);
     }
   }
@@ -87,9 +88,7 @@ const rootList = computed(() => {
       <details v-for="horse in rootList.familyRootList" open>
         <summary class="text-sm">
           <span>{{ horse.name }}</span>
-          <span v-if="horse.line" class="text-xs"
-            >（🐎{{ horse.line }}系）</span
-          >
+          <span v-if="horse.line" class="text-xs">（{{ horse.line }}系）</span>
         </summary>
         <HorseRenderer
           :horse="horse"
@@ -106,9 +105,7 @@ const rootList = computed(() => {
       <details v-for="horse in rootList.sireRootList" open>
         <summary class="text-sm">
           <span>{{ horse.name }}</span>
-          <span v-if="horse.line" class="text-xs"
-            >（🐎{{ horse.line }}系）</span
-          >
+          <span v-if="horse.line" class="text-xs">（{{ horse.line }}系）</span>
         </summary>
         <HorseRenderer
           :horse="horse"

@@ -56,14 +56,15 @@ const isNewLine = computed(() => {
       }"
     >
       <div class="text-xs text-gray-400">{{ horse.born }}</div>
-      <div
-        class="name text-sm"
-        :class="{
-          isFemale,
-          isNewLine,
-        }"
-      >
-        {{ horse.name }}
+      <div class="name text-sm">
+        <span
+          :class="{
+            isFemale,
+            isNewLine,
+          }"
+        >
+          {{ horse.name }}
+        </span>
         <span v-if="isNewLine">🔽</span>
       </div>
 

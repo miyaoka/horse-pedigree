@@ -27,7 +27,6 @@ const sheet = ref<jspreadsheet.JspreadsheetInstance | null>(null);
 
 const save = () => {
   if (!sheet.value) return;
-  console.log("save");
   sheetState.value = sheet.value.getData() as string[][];
 };
 const clear = () => {
