@@ -55,12 +55,12 @@ watch(
 );
 
 const toggleSelectYear = (year: number) => {
-  // 年ホバー中にクリックしたら固定
-  if (horseStore.selectedYear === year) {
+  // hold on
+  if (holdingSelection.value == null) {
     holdingSelection.value = year;
     return;
   }
-  // ホバーされてないところをクリックしたら固定解除
+  // hold off
   holdingSelection.value = null;
   horseStore.selectYear(year);
 };
