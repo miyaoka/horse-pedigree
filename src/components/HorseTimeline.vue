@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { HorseInfo } from "@/types";
 import { useHorseStore } from "./horseStore";
+import { numToLast2digits } from "./util";
 
 const horseStore = useHorseStore();
 
+const holdingSelection = ref<number | null>(null);
 const minYear = ref(0);
 const maxYear = ref(0);
 const timeline = ref<{ year: number; horses: HorseInfo[] }[]>([]);
@@ -51,6 +53,23 @@ watch(
     immediate: true,
   }
 );
+
+const toggleSelectYear = (year: number) => {
+  // 年ホバー中にクリックしたら固定
+  if (horseStore.selectedYear === year) {
+    holdingSelection.value = year;
+    return;
+  }
+  // ホバーされてないところをクリックしたら固定解除
+  holdingSelection.value = null;
+  horseStore.selectYear(year);
+};
+const selectYear = (year: number) => {
+  // holdされていて、かつ、holdされている年と違う年をホバーしたら何もしない
+  if (holdingSelection.value != null && holdingSelection.value !== year) return;
+
+  horseStore.selectYear(year);
+};
 </script>
 
 <template>
@@ -74,14 +93,15 @@ watch(
       :style="getYearStyle(year)"
     >
       <button
-        @mouseover="horseStore.selectYear(year)"
-        @mouseleave="horseStore.selectYear(0)"
+        @mouseover="selectYear(year)"
+        @mouseleave="selectYear(0)"
+        @click="toggleSelectYear(year)"
         class="px-4 flex"
         :class="{
           isSelected: year === horseStore.selectedYear,
         }"
       >
-        {{ year }}
+        {{ numToLast2digits(year) }}
       </button>
       <div class="flex flex-row gap-1 flex-wrap items-start">
         <button

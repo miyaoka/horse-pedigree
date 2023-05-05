@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { HorseInfo } from "~/types";
 import { useHorseStore } from "./horseStore";
-import { sortByBorn } from "./util";
+import { numToLast2digits, sortByBorn } from "./util";
 
 const props = defineProps<{
   horse: HorseInfo;
@@ -56,7 +56,9 @@ const isNewLine = computed(() => {
         isSelectedYear: horse.born === horseStore.selectedYear,
       }"
     >
-      <div class="text-xs text-gray-400">{{ horse.born }}</div>
+      <div class="text-xs text-gray-400" v-if="horse.born">
+        {{ numToLast2digits(horse.born) }}
+      </div>
       <div class="name text-sm">
         <span
           :class="{
