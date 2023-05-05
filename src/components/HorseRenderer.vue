@@ -51,15 +51,17 @@ const isNewLine = computed(() => {
       :data-shown="opacity === 1"
       @mouseover="horseStore.select(horse)"
       @mouseleave="horseStore.select(null)"
-      :class="{
-        isSelected: horseStore.isSelected(horse),
-        isSelectedYear: horse.born === horseStore.selectedYear,
-      }"
     >
       <div class="text-xs text-gray-400" v-if="horse.born">
         {{ numToLast2digits(horse.born) }}
       </div>
-      <div class="name text-sm">
+      <div
+        class="name text-sm"
+        :class="{
+          isSelected: horseStore.isSelected(horse),
+          isSelectedYear: horse.born === horseStore.selectedYear,
+        }"
+      >
         <span
           :class="{
             isFemale,
@@ -96,7 +98,7 @@ const isNewLine = computed(() => {
 .name {
   color: rgb(15, 15, 195);
 }
-.horse.isSelected {
+.isSelected {
   background: #ffdc4f;
 }
 .isFemale {
