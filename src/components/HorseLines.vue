@@ -70,7 +70,7 @@ const rootList = computed(() => {
       if (!isLineRoot && familyRootMap.has(horse.mother)) continue;
       familyRootMap.set(horse.name, horse);
     } else {
-      if (!isLineRoot && familyRootMap.has(horse.father)) continue;
+      if (!isLineRoot && sireRootMap.has(horse.father)) continue;
       sireRootMap.set(horse.name, horse);
     }
   }
