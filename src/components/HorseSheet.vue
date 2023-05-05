@@ -49,6 +49,10 @@ const addRow = () => {
   save();
 };
 
+const nameRow = 0;
+const fatherRow = 3;
+const motherRow = 4;
+
 onMounted(() => {
   const el = sheetRef.value;
   if (!el) return;
@@ -65,7 +69,17 @@ onMounted(() => {
       { type: "text", title: "系統", width: 120 },
     ],
     onselection: (instance, left, top, right, bottom) => {
-      horseStore.selectedHorses = [sheetState.value[top][left]];
+      const selection = [];
+      for (let x = left; x <= right; x++) {
+        // 名前、父、母の欄で無ければスキップ
+        if (!(x === nameRow || x === fatherRow || x === motherRow)) continue;
+        for (let y = top; y <= bottom; y++) {
+          const cell = sheetState.value[y][x];
+          if (!cell) continue;
+          selection.push(cell);
+        }
+      }
+      horseStore.selectedHorses = [...new Set(selection)];
     },
     onundo(_element, historyRecord) {
       if (!historyRecord) return;
@@ -125,6 +139,13 @@ watch(
   },
   {
     immediate: true,
+  }
+);
+
+watch(
+  () => horseStore.selectedHorses,
+  (selectedHorses) => {
+    console.log(selectedHorses);
   }
 );
 </script>
