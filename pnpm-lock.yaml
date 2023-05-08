@@ -11,8 +11,8 @@ dependencies:
     specifier: 4.11.5
     version: 4.11.5
   pinia:
-    specifier: 2.0.35
-    version: 2.0.35(vue@3.2.47)
+    specifier: 2.0.36
+    version: 2.0.36(vue@3.2.47)
 
 devDependencies:
   '@types/node':
@@ -759,7 +759,7 @@ packages:
     resolution: {integrity: sha512-ojzUMHKrQ7ZFjhWqMYKYetcqHSfgtIhjc6Hxw4alfQaGTlFdj38Vpz8Ol36YvmNdSjLFTNWYAgxEWCvg6HcSSg==}
     dependencies:
       '@nuxt/kit': 3.4.3
-      pinia: 2.0.35(vue@3.2.47)
+      pinia: 2.0.36(vue@3.2.47)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - rollup
@@ -3314,8 +3314,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /pinia@2.0.35(vue@3.2.47):
-    resolution: {integrity: sha512-P1IKKQWhxGXiiZ3atOaNI75bYlFUbRxtJdhPLX059Z7+b9Z04rnTZdSY8Aph1LA+/4QEMAYHsTQ638Wfe+6K5g==}
+  /pinia@2.0.36(vue@3.2.47):
+    resolution: {integrity: sha512-4UKApwjlmJH+VuHKgA+zQMddcCb3ezYnyewQ9NVrsDqZ/j9dMv5+rh+1r48whKNdpFkZAWVxhBp5ewYaYX9JcQ==}
     peerDependencies:
       '@vue/composition-api': ^1.4.0
       typescript: '>=4.4.4'
