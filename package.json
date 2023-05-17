@@ -16,7 +16,7 @@
     "tailwindcss": "3.3.2"
   },
   "dependencies": {
-    "@pinia/nuxt": "0.4.10",
+    "@pinia/nuxt": "0.4.11",
     "@vueuse/core": "^10.1.2",
     "jspreadsheet-ce": "4.11.5",
     "pinia": "2.0.36"
